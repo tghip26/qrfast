@@ -91,14 +91,13 @@ export default function GeneratorView({
     }
   };
 
-  // Generate pure client-side EMVCo QR code whenever inputs change
+  // Generate pure client-side EMVCo QR code and official image whenever inputs change
   useEffect(() => {
     const cleanAcc = cleanDigits(accountNo);
     if (selectedBank && cleanAcc.length >= 4) {
       const emvcoString = generateVietQREmvco({
         bankBin: selectedBank.bin,
         accountNo: cleanAcc,
-        isCard: transferType === 'card',
         amount: cleanDigits(amount),
         memo: memo.trim()
       });
@@ -106,8 +105,8 @@ export default function GeneratorView({
       if (emvcoString) {
         QRCode.toDataURL(emvcoString, { 
           errorCorrectionLevel: 'M', 
-          margin: 1, 
-          scale: 8,
+          margin: 2, 
+          scale: 9,
           color: {
             dark: '#080c14',
             light: '#ffffff'
@@ -121,7 +120,7 @@ export default function GeneratorView({
     } else {
       setEmvcoQrUrl('');
     }
-  }, [selectedBank, accountNo, transferType, amount, memo]);
+  }, [selectedBank, accountNo, amount, memo]);
 
   // Submit and generate randomized encrypted link
   const handleGenerate = (e) => {
@@ -520,7 +519,7 @@ export default function GeneratorView({
                     />
 
                     <div style={{ fontSize: '0.74rem', color: '#64748b', marginTop: '6px', fontWeight: 600 }}>
-                      VIETQR • NAPAS 24/7 {transferType === 'card' ? '(CHUYỂN QUA SỐ THẺ)' : ''}
+                      VIETQR • NAPAS 24/7 (CHUẨN LIÊN NGÂN HÀNG)
                     </div>
                   </div>
                 ) : styledPreviewQrUrl ? (
@@ -543,13 +542,39 @@ export default function GeneratorView({
               )}
             </div>
 
+            {/* Download Button in Preview */}
+            {accountNo.trim().length >= 4 && (
+              <div style={{ width: '100%', marginTop: '14px' }}>
+                <button
+                  type="button"
+                  className="icon-btn"
+                  onClick={() => {
+                    const downloadUrl = emvcoQrUrl || styledPreviewQrUrl;
+                    if (downloadUrl) {
+                      const link = document.createElement('a');
+                      link.href = downloadUrl;
+                      link.download = `vietqr-${selectedBank?.shortName || 'bank'}-${accountNo}.png`;
+                      link.target = '_blank';
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                      onShowToast('Đã tải ảnh mã QR xuống thiết bị!');
+                    }
+                  }}
+                  style={{ width: '100%', justifyContent: 'center', background: 'rgba(0, 229, 153, 0.12)', color: 'var(--emerald-400)', borderColor: 'rgba(0, 229, 153, 0.3)' }}
+                >
+                  <span>📥 Tải ảnh mã QR (Để quét từ thư viện)</span>
+                </button>
+              </div>
+            )}
+
             <div className="preview-meta">
               <div className="meta-row">
                 <span className="meta-label">Ngân hàng</span>
                 <span className="meta-value">{selectedBank?.shortName || 'Chưa chọn'}</span>
               </div>
               <div className="meta-row">
-                <span className="meta-label">{transferType === 'card' ? 'Số thẻ Napas' : 'Số tài khoản'}</span>
+                <span className="meta-label">Số tài khoản / Thẻ</span>
                 <span className="meta-value">{accountNo || '---'}</span>
               </div>
               {accountName && (
@@ -572,6 +597,11 @@ export default function GeneratorView({
                   </span>
                 </div>
               )}
+            </div>
+
+            {/* Helpful screen scan tip */}
+            <div style={{ marginTop: '16px', padding: '10px 12px', borderRadius: 'var(--radius-sm)', background: 'var(--bg-input)', fontSize: '0.76rem', color: 'var(--text-dim)', textAlign: 'left', lineHeight: 1.5 }}>
+              💡 <strong>Mẹo quét:</strong> Nếu camera điện thoại quét trực tiếp trên màn hình máy tính bị chói sáng hoặc sọc màn hình, bạn hãy bấm <strong>"Tải ảnh mã QR"</strong> $\rightarrow$ Mở app ngân hàng $\rightarrow$ Chọn <strong>Quét QR</strong> $\rightarrow$ Chọn <strong>"Chọn ảnh từ thư viện"</strong>.
             </div>
           </div>
         </div>

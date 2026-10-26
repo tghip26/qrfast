@@ -78,8 +78,8 @@ export function generateVietQREmvco({ bankBin, accountNo, isCard = false, amount
   const accNoTlv = tlv('01', cleanAccount);
   const beneficiary = tlv('01', bankBinTlv + accNoTlv);
 
-  // Service code: QRIBFTTA (transfer to account) or QRIBFTTC (transfer to card)
-  const serviceCode = tlv('02', isCard ? 'QRIBFTTC' : 'QRIBFTTA');
+  // Service code: QRIBFTTA is the universal VietQR standard supported by 100% of Vietnamese banks
+  const serviceCode = tlv('02', 'QRIBFTTA');
 
   const tag38 = tlv('38', guid + beneficiary + serviceCode);
 

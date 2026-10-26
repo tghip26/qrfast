@@ -53,7 +53,6 @@ export default function PaymentView({
         const emvcoString = generateVietQREmvco({
           bankBin: matched.bin || decoded.bankBin,
           accountNo: cleanAccount,
-          isCard: Boolean(decoded.isCard),
           amount: decoded.amount,
           memo: decoded.memo
         });
@@ -61,8 +60,8 @@ export default function PaymentView({
         if (emvcoString) {
           QRCode.toDataURL(emvcoString, { 
             errorCorrectionLevel: 'M', 
-            margin: 1, 
-            scale: 8,
+            margin: 2, 
+            scale: 9,
             color: {
               dark: '#080c14',
               light: '#ffffff'

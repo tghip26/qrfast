@@ -22,6 +22,35 @@ export function buildVietQRUrl({ bankBin, accountNo, template = 'compact2', amou
   const query = params.toString();
   return query ? `${baseUrl}?${query}` : baseUrl;
 }
+/**
+ * Calls official VietQR generation API for verified Napas image
+ */
+export async function fetchOfficialVietQR({ bankBin, accountNo, template = 'compact2', amount = '', memo = '', accountName = '' }) {
+  if (!bankBin || !accountNo) return null;
+  const cleanAccount = String(accountNo).replace(/\s+/g, '');
+  try {
+    const res = await fetch('https://api.vietqr.io/v2/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        accountNo: cleanAccount,
+        accountName: accountName ? accountName.trim().toUpperCase() : 'CHU TAI KHOAN',
+        acqId: String(bankBin),
+        amount: amount && Number(amount) > 0 ? String(amount) : undefined,
+        addInfo: memo ? memo.trim() : undefined,
+        format: 'text',
+        template: template
+      })
+    });
+    const data = await res.json();
+    if (data && data.code === '00' && data.data) {
+      return data.data; // contains qrCode and qrDataURL
+    }
+  } catch (err) {
+    console.warn('Official VietQR API call error:', err);
+  }
+  return null;
+}
 
 /**
  * Formats a raw number or string into Vietnamese Dong display (e.g. "1.500.000 ₫")
