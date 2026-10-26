@@ -53,6 +53,43 @@ export async function fetchOfficialVietQR({ bankBin, accountNo, template = 'comp
 }
 
 /**
+ * Lookup bank account holder name via VietQR / Napas API
+ * Supports API keys if configured, and handles interbank queries
+ */
+export async function lookupAccountName({ bankBin, accountNo }) {
+  if (!bankBin || !accountNo) return null;
+  const cleanAccount = String(accountNo).replace(/\s+/g, '');
+  if (cleanAccount.length < 5) return null;
+
+  const clientId = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_VIETQR_CLIENT_ID) || '';
+  const apiKey = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_VIETQR_API_KEY) || '';
+
+  try {
+    const headers = { 'Content-Type': 'application/json' };
+    if (clientId && apiKey) {
+      headers['x-client-id'] = clientId;
+      headers['x-api-key'] = apiKey;
+    }
+
+    const res = await fetch('https://api.vietqr.io/v2/lookup', {
+      method: 'POST',
+      headers,
+      body: JSON.stringify({
+        bin: String(bankBin),
+        accountNumber: cleanAccount
+      })
+    });
+    const data = await res.json();
+    if (data && (data.code === '00' || data.code === 200) && data.data?.accountName) {
+      return data.data.accountName;
+    }
+  } catch (err) {
+    // Interbank gateway query or offline handling
+  }
+  return null;
+}
+
+/**
  * Formats a raw number or string into Vietnamese Dong display (e.g. "1.500.000 ₫")
  */
 export function formatVND(value) {
