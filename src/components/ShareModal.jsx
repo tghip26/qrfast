@@ -74,15 +74,16 @@ export default function ShareModal({
   };
 
   const handleDownloadQR = () => {
-    if (shareData.qrUrl) {
+    const downloadUrl = shareData.emvcoQrUrl || shareData.qrUrl || shareData.styledQrUrl;
+    if (downloadUrl) {
       const link = document.createElement('a');
-      link.href = shareData.qrUrl;
+      link.href = downloadUrl;
       link.download = `vietqr-${shareData.accountNo}-${Date.now()}.png`;
       link.target = '_blank';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      onShowToast('Đang tải ảnh mã QR...');
+      onShowToast('Đã tải ảnh mã QR xuống thiết bị!');
     }
   };
 

@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import QRCode from 'qrcode';
 import { 
   Copy, Check, Download, Share2, Smartphone, ShieldCheck, 
-  ArrowLeft, AlertTriangle, ExternalLink, RefreshCw 
+  ArrowLeft, AlertTriangle, ExternalLink, RefreshCw, CreditCard 
 } from 'lucide-react';
 import { decodePaymentData } from '../utils/cryptoLink';
 import { buildVietQRUrl, formatVND, numberToVietnameseWords } from '../utils/vietqr';
+import { generateVietQREmvco } from '../utils/emvco';
 import { DEFAULT_BANKS } from '../data/banks';
 import BankAppsModal from './BankAppsModal';
 
@@ -19,10 +20,9 @@ export default function PaymentView({
   const [loading, setLoading] = useState(true);
   const [bankInfo, setBankInfo] = useState(null);
   const [copiedField, setCopiedField] = useState(null);
-  const [fallbackQrUrl, setFallbackQrUrl] = useState('');
-  const [qrImgError, setQrImgError] = useState(false);
+  const [emvcoQrUrl, setEmvcoQrUrl] = useState('');
+  const [qrStyle, setQrStyle] = useState('standard'); // 'standard' (EMVCo) or 'styled' (VietQR card)
   const [showAppsModal, setShowAppsModal] = useState(false);
-  const canvasRef = useRef(null);
 
   useEffect(() => {
     if (!token) {
@@ -48,12 +48,31 @@ export default function PaymentView({
         };
         setBankInfo(matched);
 
-        // Generate fallback client-side QR data URL in case external img is slow
+        // Generate official standard Napas EMVCo QR code string
         const cleanAccount = decoded.accountNo.replace(/\s+/g, '');
-        const payloadText = `https://qrfast.app/pay?b=${decoded.bankBin}&a=${cleanAccount}&m=${decoded.amount || ''}&d=${encodeURIComponent(decoded.memo || '')}`;
-        QRCode.toDataURL(payloadText, { width: 340, margin: 2 }, (err, url) => {
-          if (!err && url) setFallbackQrUrl(url);
+        const emvcoString = generateVietQREmvco({
+          bankBin: matched.bin || decoded.bankBin,
+          accountNo: cleanAccount,
+          isCard: Boolean(decoded.isCard),
+          amount: decoded.amount,
+          memo: decoded.memo
         });
+
+        if (emvcoString) {
+          QRCode.toDataURL(emvcoString, { 
+            errorCorrectionLevel: 'M', 
+            margin: 1, 
+            scale: 8,
+            color: {
+              dark: '#080c14',
+              light: '#ffffff'
+            }
+          }, (err, url) => {
+            if (!err && url) {
+              setEmvcoQrUrl(url);
+            }
+          });
+        }
       } else {
         setData(null);
       }
@@ -87,7 +106,7 @@ export default function PaymentView({
   }) : '';
 
   const handleDownloadQR = () => {
-    const urlToDownload = (!qrImgError && vietQrUrl) ? vietQrUrl : fallbackQrUrl;
+    const urlToDownload = qrStyle === 'standard' && emvcoQrUrl ? emvcoQrUrl : (vietQrUrl || emvcoQrUrl);
     if (urlToDownload) {
       const link = document.createElement('a');
       link.href = urlToDownload;
@@ -96,7 +115,7 @@ export default function PaymentView({
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-      onShowToast('Đang tải ảnh mã QR xuống thiết bị...');
+      onShowToast('Đã tải ảnh mã QR xuống thiết bị!');
     }
   };
 
@@ -106,7 +125,7 @@ export default function PaymentView({
       try {
         await navigator.share({
           title: `Chuyển tiền tới ${data?.accountName || 'tài khoản'}`,
-          text: `Mã QR & Số tài khoản chuyển tiền ${bankInfo?.shortName || ''} - ${data?.accountNo}`,
+          text: `Mã QR & ${data?.isCard ? 'Số thẻ Napas' : 'Số tài khoản'} chuyển tiền ${bankInfo?.shortName || ''} - ${data?.accountNo}`,
           url: fullUrl
         });
       } catch (e) {}
@@ -183,21 +202,73 @@ export default function PaymentView({
           <p style={{ fontSize: '0.84rem', color: 'var(--text-muted)' }}>
             Quét mã QR dưới đây bằng app ngân hàng để chuyển tiền ngay tức thì
           </p>
+
+          {/* Style Selector Tabs */}
+          <div style={{ display: 'inline-flex', gap: '8px', marginTop: '14px' }}>
+            <button
+              className={`chip-btn ${qrStyle === 'standard' ? 'active' : ''}`}
+              onClick={() => setQrStyle('standard')}
+              style={{ fontSize: '0.78rem', padding: '4px 12px' }}
+            >
+              ⚡ Chuẩn Napas (Quét cực nhạy)
+            </button>
+            <button
+              className={`chip-btn ${qrStyle === 'styled' ? 'active' : ''}`}
+              onClick={() => setQrStyle('styled')}
+              style={{ fontSize: '0.78rem', padding: '4px 12px' }}
+            >
+              Mẫu Thẻ VietQR
+            </button>
+          </div>
         </div>
 
         {/* QR Code Section */}
         <div className="payment-qr-container">
           <div className="payment-qr-box">
-            {!qrImgError && vietQrUrl ? (
+            {qrStyle === 'standard' && emvcoQrUrl ? (
+              <div style={{ textAlign: 'center', width: '100%' }}>
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  justifyContent: 'center', 
+                  gap: '8px', 
+                  marginBottom: '10px',
+                  paddingBottom: '8px',
+                  borderBottom: '1px solid #f1f5f9'
+                }}>
+                  {bankInfo?.logo && (
+                    <img 
+                      src={bankInfo.logo} 
+                      alt={bankInfo.shortName} 
+                      style={{ height: '26px', objectFit: 'contain' }} 
+                    />
+                  )}
+                  <span style={{ fontWeight: 800, color: '#0f172a', fontSize: '1rem' }}>
+                    {bankInfo?.shortName}
+                  </span>
+                </div>
+
+                <img 
+                  src={emvcoQrUrl} 
+                  alt="Mã QR Napas 24/7" 
+                  className="payment-qr-img" 
+                  style={{ padding: '6px' }}
+                />
+
+                <div style={{ fontSize: '0.78rem', color: '#64748b', marginTop: '8px', fontWeight: 700 }}>
+                  VIETQR • NAPAS 24/7 {data.isCard ? '(CHUYỂN QUA SỐ THẺ)' : ''}
+                </div>
+              </div>
+            ) : vietQrUrl ? (
               <img 
                 src={vietQrUrl} 
                 alt="Mã VietQR" 
                 className="payment-qr-img"
-                onError={() => setQrImgError(true)}
+                onError={() => setQrStyle('standard')}
               />
-            ) : fallbackQrUrl ? (
+            ) : emvcoQrUrl ? (
               <img 
-                src={fallbackQrUrl} 
+                src={emvcoQrUrl} 
                 alt="Mã QR Chuyển Tiền" 
                 className="payment-qr-img" 
               />
@@ -207,7 +278,7 @@ export default function PaymentView({
           </div>
 
           <p style={{ fontSize: '0.82rem', color: 'var(--text-dim)', marginBottom: '12px' }}>
-            Hỗ trợ tất cả ứng dụng ngân hàng & Ví điện tử tại Việt Nam
+            Hỗ trợ 100% ứng dụng ngân hàng & Ví MoMo, ZaloPay, ViettelMoney
           </p>
 
           <div className="payment-actions-bar">
@@ -224,17 +295,19 @@ export default function PaymentView({
 
         {/* Payment Data Fields with 1-click Copy */}
         <div className="payment-data-list">
-          {/* Account Number */}
+          {/* Account Number / Card Number */}
           <div className="payment-data-item">
             <div>
-              <div className="data-item-label">Số tài khoản thụ hưởng</div>
+              <div className="data-item-label">
+                {data.isCard ? 'Số thẻ ATM Napas thụ hưởng' : 'Số tài khoản thụ hưởng'}
+              </div>
               <div className="data-item-val" style={{ letterSpacing: '0.05em' }}>
                 {data.accountNo}
               </div>
             </div>
             <button 
               className={`copy-badge-btn ${copiedField === 'account' ? 'copied' : ''}`}
-              onClick={() => handleCopy(data.accountNo, 'account', 'số tài khoản')}
+              onClick={() => handleCopy(data.accountNo, 'account', data.isCard ? 'số thẻ' : 'số tài khoản')}
             >
               {copiedField === 'account' ? <Check size={14} /> : <Copy size={14} />}
               <span>{copiedField === 'account' ? 'Đã sao chép' : 'Sao chép'}</span>
@@ -259,11 +332,16 @@ export default function PaymentView({
           {/* Bank Full Name */}
           <div className="payment-data-item">
             <div>
-              <div className="data-item-label">Ngân hàng</div>
+              <div className="data-item-label">Ngân hàng thụ hưởng</div>
               <div style={{ fontSize: '0.92rem', fontWeight: 600, color: 'var(--text-main)' }}>
                 {bankInfo?.name || bankInfo?.shortName || data.bankBin}
               </div>
             </div>
+            {data.isCard && (
+              <span className="brand-badge" style={{ alignSelf: 'center' }}>
+                Thẻ Napas
+              </span>
+            )}
           </div>
 
           {/* Amount */}

@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import QRCode from 'qrcode';
 import { 
   Building2, ChevronRight, User, DollarSign, FileText, 
   Sparkles, Zap, Trash2, QrCode, Layers, ShieldCheck, 
-  CreditCard, Check, ArrowRight
+  CreditCard, Check, ArrowRight, AlertCircle, Info
 } from 'lucide-react';
 import { POPULAR_BANK_CODES } from '../data/banks';
 import { buildVietQRUrl, formatVND, cleanDigits, numberToVietnameseWords } from '../utils/vietqr';
+import { generateVietQREmvco, detectBankFromCardNumber } from '../utils/emvco';
 import { encodePaymentData } from '../utils/cryptoLink';
 
 const PRESET_AMOUNTS = [
@@ -34,12 +36,40 @@ export default function GeneratorView({
   setSelectedBank,
   onShowToast 
 }) {
+  const [transferType, setTransferType] = useState('account'); // 'account' or 'card'
   const [accountNo, setAccountNo] = useState('');
   const [accountName, setAccountName] = useState('');
   const [amount, setAmount] = useState('');
   const [memo, setMemo] = useState('');
+  const [qrStyle, setQrStyle] = useState('standard'); // 'standard' (EMVCo pure) or 'styled' (VietQR card)
   const [template, setTemplate] = useState('compact2');
-  const [previewError, setPreviewError] = useState(false);
+  
+  // Real-time generated QR data URL (pure Napas EMVCo)
+  const [emvcoQrUrl, setEmvcoQrUrl] = useState('');
+  const [autoDetectedMessage, setAutoDetectedMessage] = useState('');
+
+  // Handle Account / Card input change with Auto-Detection
+  const handleAccountChange = (e) => {
+    const rawVal = e.target.value;
+    const clean = cleanDigits(rawVal);
+    setAccountNo(clean);
+
+    // Auto-detect bank and card mode if user enters a Napas card (starts with 9704)
+    if (clean.length >= 6) {
+      const detected = detectBankFromCardNumber(clean, banks);
+      if (detected && detected.bank) {
+        if (selectedBank?.bin !== detected.bank.bin) {
+          setSelectedBank(detected.bank);
+        }
+        if (detected.isCard && transferType !== 'card') {
+          setTransferType('card');
+          setAutoDetectedMessage(`Đã tự động nhận diện thẻ Napas của ngân hàng ${detected.bank.shortName} (${detected.bin})!`);
+        }
+      }
+    } else {
+      setAutoDetectedMessage('');
+    }
+  };
 
   // Quick preset amount addition
   const handleAddAmount = (val) => {
@@ -57,8 +87,41 @@ export default function GeneratorView({
     const found = banks.find(b => b.code.toUpperCase() === code.toUpperCase());
     if (found) {
       setSelectedBank(found);
+      setAutoDetectedMessage('');
     }
   };
+
+  // Generate pure client-side EMVCo QR code whenever inputs change
+  useEffect(() => {
+    const cleanAcc = cleanDigits(accountNo);
+    if (selectedBank && cleanAcc.length >= 4) {
+      const emvcoString = generateVietQREmvco({
+        bankBin: selectedBank.bin,
+        accountNo: cleanAcc,
+        isCard: transferType === 'card',
+        amount: cleanDigits(amount),
+        memo: memo.trim()
+      });
+
+      if (emvcoString) {
+        QRCode.toDataURL(emvcoString, { 
+          errorCorrectionLevel: 'M', 
+          margin: 1, 
+          scale: 8,
+          color: {
+            dark: '#080c14',
+            light: '#ffffff'
+          }
+        }, (err, url) => {
+          if (!err && url) {
+            setEmvcoQrUrl(url);
+          }
+        });
+      }
+    } else {
+      setEmvcoQrUrl('');
+    }
+  }, [selectedBank, accountNo, transferType, amount, memo]);
 
   // Submit and generate randomized encrypted link
   const handleGenerate = (e) => {
@@ -72,11 +135,31 @@ export default function GeneratorView({
 
     const cleanAcc = cleanDigits(accountNo);
     if (!cleanAcc || cleanAcc.length < 4) {
-      onShowToast('Vui lòng nhập số tài khoản hợp lệ!');
+      onShowToast('Vui lòng nhập số tài khoản hoặc số thẻ hợp lệ!');
       return;
     }
 
     const cleanAmt = cleanDigits(amount);
+    const isCard = transferType === 'card';
+
+    // Build standard EMVCo string
+    const emvcoString = generateVietQREmvco({
+      bankBin: selectedBank.bin,
+      accountNo: cleanAcc,
+      isCard: isCard,
+      amount: cleanAmt,
+      memo: memo.trim()
+    });
+
+    // Build styled VietQR URL
+    const styledQrUrl = buildVietQRUrl({
+      bankBin: selectedBank.bin,
+      accountNo: cleanAcc,
+      template: template,
+      amount: cleanAmt,
+      memo: memo.trim(),
+      accountName: accountName.trim()
+    });
 
     const generated = encodePaymentData({
       bankBin: selectedBank.bin,
@@ -87,26 +170,21 @@ export default function GeneratorView({
       accountName: accountName.trim().toUpperCase(),
       amount: cleanAmt ? Number(cleanAmt) : '',
       memo: memo.trim(),
+      isCard: isCard,
       template: template
-    });
-
-    const qrUrl = buildVietQRUrl({
-      bankBin: selectedBank.bin,
-      accountNo: cleanAcc,
-      template: template,
-      amount: cleanAmt,
-      memo: memo.trim(),
-      accountName: accountName.trim()
     });
 
     onGenerateSuccess({
       ...generated,
-      qrUrl
+      emvcoString,
+      emvcoQrUrl,
+      styledQrUrl,
+      qrUrl: qrStyle === 'standard' && emvcoQrUrl ? emvcoQrUrl : styledQrUrl
     });
   };
 
-  // Live QR Url for preview
-  const livePreviewQrUrl = (selectedBank && accountNo.trim().length >= 4) ? buildVietQRUrl({
+  // Styled card VietQR preview URL
+  const styledPreviewQrUrl = (selectedBank && accountNo.trim().length >= 4) ? buildVietQRUrl({
     bankBin: selectedBank.bin,
     accountNo: cleanDigits(accountNo),
     template: template,
@@ -128,7 +206,7 @@ export default function GeneratorView({
           <span className="gradient-text">Mã Hóa Ngẫu Nhiên</span> kèm VietQR
         </h1>
         <p className="hero-subtitle">
-          Nhập số tài khoản & chọn ngân hàng để tạo đường link độc nhất vô nhị. Người nhận chỉ cần mở link là có thể quét mã QR chuyển tiền ngay tức thì mà không cần cài đặt gì.
+          Nhập số tài khoản hoặc số thẻ ATM Napas để tạo link chuyển khoản ngẫu nhiên. Quét siêu nhạy trên 100% ứng dụng ngân hàng và ví điện tử.
         </p>
       </div>
 
@@ -142,7 +220,43 @@ export default function GeneratorView({
               </div>
               <span>Thông tin tài khoản thụ hưởng</span>
             </div>
-            <span className="brand-badge">Napas 247</span>
+            <span className="brand-badge">Napas 247 Chuẩn</span>
+          </div>
+
+          {/* Transfer Type Tabs: Số tài khoản vs Số thẻ */}
+          <div style={{ marginBottom: '18px' }}>
+            <div className="form-label" style={{ marginBottom: '6px' }}>
+              <span>Hình thức nhận tiền:</span>
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+              <button
+                type="button"
+                className={`style-card ${transferType === 'account' ? 'active' : ''}`}
+                onClick={() => { setTransferType('account'); setAutoDetectedMessage(''); }}
+                style={{ padding: '10px 14px' }}
+              >
+                <CreditCard size={18} color="var(--emerald-400)" />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 700, fontSize: '0.88rem' }}>Số tài khoản</div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>Tài khoản ngân hàng thông thường</div>
+                </div>
+                {transferType === 'account' && <Check size={16} color="var(--emerald-400)" />}
+              </button>
+
+              <button
+                type="button"
+                className={`style-card ${transferType === 'card' ? 'active' : ''}`}
+                onClick={() => setTransferType('card')}
+                style={{ padding: '10px 14px' }}
+              >
+                <CreditCard size={18} color="var(--cyan-400)" />
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontWeight: 700, fontSize: '0.88rem' }}>Số thẻ ATM Napas</div>
+                  <div style={{ fontSize: '0.72rem', color: 'var(--text-dim)' }}>16-19 số in dập trên thẻ ATM</div>
+                </div>
+                {transferType === 'card' && <Check size={16} color="var(--emerald-400)" />}
+              </button>
+            </div>
           </div>
 
           {/* 1. Bank Selection */}
@@ -198,10 +312,10 @@ export default function GeneratorView({
             </div>
           </div>
 
-          {/* 2. Account Number */}
+          {/* 2. Account / Card Number */}
           <div className="form-group">
             <div className="form-label">
-              <span>Số tài khoản</span>
+              <span>{transferType === 'card' ? 'Số thẻ ATM Napas (16-19 số)' : 'Số tài khoản'}</span>
               <span className="label-hint">Bắt buộc</span>
             </div>
             <div className="input-wrapper">
@@ -209,19 +323,38 @@ export default function GeneratorView({
               <input 
                 type="text"
                 className="form-input has-left-icon"
-                placeholder="Ví dụ: 0987654321 hoặc 1903..."
+                placeholder={transferType === 'card' ? 'Ví dụ: 9704229208504906...' : 'Ví dụ: 0987654321 hoặc 1903...'}
                 value={accountNo}
-                onChange={(e) => setAccountNo(e.target.value)}
+                onChange={handleAccountChange}
                 required
               />
             </div>
+
+            {/* Auto Detection Message Banner */}
+            {autoDetectedMessage && (
+              <div style={{ 
+                marginTop: '8px', 
+                padding: '8px 12px', 
+                borderRadius: 'var(--radius-sm)', 
+                background: 'rgba(0, 229, 153, 0.12)', 
+                border: '1px solid rgba(0, 229, 153, 0.3)',
+                fontSize: '0.82rem',
+                color: 'var(--emerald-400)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                <Info size={15} />
+                <span>{autoDetectedMessage}</span>
+              </div>
+            )}
           </div>
 
           {/* 3. Account Name */}
           <div className="form-group">
             <div className="form-label">
               <span>Tên chủ tài khoản</span>
-              <span className="label-hint">Tùy chọn (hiển thị để người gửi đối chiếu)</span>
+              <span className="label-hint">Tùy chọn (để người gửi đối chiếu)</span>
             </div>
             <div className="input-wrapper">
               <User size={18} className="input-icon-left" />
@@ -324,38 +457,6 @@ export default function GeneratorView({
             </div>
           </div>
 
-          {/* 6. Template style */}
-          <div className="form-group">
-            <div className="form-label">
-              <span>Mẫu mã VietQR</span>
-            </div>
-            <div className="style-options">
-              <button
-                type="button"
-                className={`style-card ${template === 'compact2' ? 'active' : ''}`}
-                onClick={() => setTemplate('compact2')}
-              >
-                <div style={{ flex: 1 }}>
-                  <div className="style-card-title">Napas 247 Chuẩn</div>
-                  <div className="style-card-desc">Có khung thẻ, logo ngân hàng & số tiền</div>
-                </div>
-                {template === 'compact2' && <Check size={16} color="var(--emerald-400)" />}
-              </button>
-
-              <button
-                type="button"
-                className={`style-card ${template === 'qr_only' ? 'active' : ''}`}
-                onClick={() => setTemplate('qr_only')}
-              >
-                <div style={{ flex: 1 }}>
-                  <div className="style-card-title">Chỉ mã QR</div>
-                  <div className="style-card-desc">Mã QR đơn giản, kích thước tối giản</div>
-                </div>
-                {template === 'qr_only' && <Check size={16} color="var(--emerald-400)" />}
-              </button>
-            </div>
-          </div>
-
           {/* Generate Button */}
           <button type="submit" className="btn-primary">
             <Sparkles size={20} />
@@ -367,24 +468,76 @@ export default function GeneratorView({
         {/* Right Column: Live Sticky Preview Card */}
         <div className="preview-sticky">
           <div className="preview-card">
-            <span className="preview-badge">
-              <QrCode size={13} />
-              <span>Xem trước mã QR thời gian thực</span>
-            </span>
+            <div style={{ display: 'flex', gap: '8px', marginBottom: '14px', width: '100%' }}>
+              <button
+                type="button"
+                className={`icon-btn ${qrStyle === 'standard' ? 'active' : ''}`}
+                onClick={() => setQrStyle('standard')}
+                style={{ flex: 1, justifyContent: 'center', fontSize: '0.8rem', padding: '6px 8px' }}
+              >
+                <span>⚡ Chuẩn Napas (Quét cực nhạy)</span>
+              </button>
+              <button
+                type="button"
+                className={`icon-btn ${qrStyle === 'styled' ? 'active' : ''}`}
+                onClick={() => setQrStyle('styled')}
+                style={{ flex: 1, justifyContent: 'center', fontSize: '0.8rem', padding: '6px 8px' }}
+              >
+                <span>Mẫu Thẻ VietQR</span>
+              </button>
+            </div>
 
             <div className="qr-frame">
-              {livePreviewQrUrl && !previewError ? (
-                <img 
-                  src={livePreviewQrUrl} 
-                  alt="Xem trước VietQR" 
-                  className="qr-image"
-                  onError={() => setPreviewError(true)}
-                />
+              {accountNo.trim().length >= 4 ? (
+                qrStyle === 'standard' && emvcoQrUrl ? (
+                  <div style={{ textAlign: 'center', width: '100%' }}>
+                    <div style={{ 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center', 
+                      gap: '8px', 
+                      marginBottom: '8px',
+                      paddingBottom: '6px',
+                      borderBottom: '1px solid #f1f5f9'
+                    }}>
+                      {selectedBank?.logo && (
+                        <img 
+                          src={selectedBank.logo} 
+                          alt={selectedBank.shortName} 
+                          style={{ height: '22px', objectFit: 'contain' }} 
+                        />
+                      )}
+                      <span style={{ fontWeight: 800, color: '#0f172a', fontSize: '0.92rem' }}>
+                        {selectedBank?.shortName}
+                      </span>
+                    </div>
+
+                    <img 
+                      src={emvcoQrUrl} 
+                      alt="Mã QR Napas 24/7" 
+                      className="qr-image"
+                      style={{ padding: '4px' }}
+                    />
+
+                    <div style={{ fontSize: '0.74rem', color: '#64748b', marginTop: '6px', fontWeight: 600 }}>
+                      VIETQR • NAPAS 24/7 {transferType === 'card' ? '(CHUYỂN QUA SỐ THẺ)' : ''}
+                    </div>
+                  </div>
+                ) : styledPreviewQrUrl ? (
+                  <img 
+                    src={styledPreviewQrUrl} 
+                    alt="Xem trước VietQR" 
+                    className="qr-image"
+                    onError={() => setQrStyle('standard')}
+                  />
+                ) : (
+                  <div className="qr-placeholder">Đang tải mã QR...</div>
+                )
               ) : (
                 <div className="qr-placeholder">
                   <QrCode size={48} strokeWidth={1.5} />
                   <span style={{ fontSize: '0.84rem', textAlign: 'center', padding: '0 12px' }}>
-                    Nhập số tài khoản & ngân hàng để xem trước mã VietQR tự động
+                    Nhập số tài khoản hoặc số thẻ Napas để xem trước mã QR tự động
                   </span>
                 </div>
               )}
@@ -396,7 +549,7 @@ export default function GeneratorView({
                 <span className="meta-value">{selectedBank?.shortName || 'Chưa chọn'}</span>
               </div>
               <div className="meta-row">
-                <span className="meta-label">Số tài khoản</span>
+                <span className="meta-label">{transferType === 'card' ? 'Số thẻ Napas' : 'Số tài khoản'}</span>
                 <span className="meta-value">{accountNo || '---'}</span>
               </div>
               {accountName && (
@@ -440,9 +593,9 @@ export default function GeneratorView({
           <div className="feature-icon-wrap">
             <ShieldCheck size={22} />
           </div>
-          <h3 className="feature-title">Chuẩn VietQR & Napas 24/7</h3>
+          <h3 className="feature-title">Quét Nhạy 100% Mọi App Ngân Hàng</h3>
           <p className="feature-desc">
-            Tương thích 100% với hơn 50 app ngân hàng tại Việt Nam (Vietcombank, MB, Techcombank, TPBank, VPBank,...) và ví MoMo, ZaloPay.
+            Tạo chuẩn mã EMVCo Napas 24/7 trực tiếp, tự động nhận diện số tài khoản và số thẻ ATM Napas 16 số, camera ngân hàng nhận diện ngay tức thì.
           </p>
         </div>
 
@@ -450,7 +603,7 @@ export default function GeneratorView({
           <div className="feature-icon-wrap">
             <Zap size={22} />
           </div>
-          <h3 className="feature-title">Sao Chép 1 Chạm & Quét Tức Thì</h3>
+          <h3 className="feature-title">Sao Chép 1 Chạm & An Toàn</h3>
           <p className="feature-desc">
             Trang thanh toán tối ưu cho điện thoại: nút sao chép số tài khoản, số tiền, nội dung 1 chạm và phím tắt mở trực tiếp app ngân hàng.
           </p>

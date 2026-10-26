@@ -39,6 +39,7 @@ export function encodePaymentData(data) {
     n: data.accountName || '',
     m: data.amount ? String(data.amount) : '',
     d: data.memo || '',
+    card: data.isCard ? 1 : 0,
     theme: data.theme || 'ocean',
     template: data.template || 'compact2'
   };
@@ -130,6 +131,7 @@ export function decodePaymentData(token) {
       accountName: payload.n || '',
       amount: payload.m || '',
       memo: payload.d || '',
+      isCard: Boolean(payload.card),
       theme: payload.theme || 'ocean',
       template: payload.template || 'compact2',
       createdAt: payload.t || Date.now()
