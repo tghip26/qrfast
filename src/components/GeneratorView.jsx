@@ -48,24 +48,15 @@ export default function GeneratorView({
   const [emvcoQrUrl, setEmvcoQrUrl] = useState('');
   const [autoDetectedMessage, setAutoDetectedMessage] = useState('');
 
-  // Handle Account / Card input change with Auto-Detection
+  // Handle Account / Card input change
   const handleAccountChange = (e) => {
     const rawVal = e.target.value;
     const clean = cleanDigits(rawVal);
     setAccountNo(clean);
 
-    // Auto-detect bank and card mode if user enters a Napas card (starts with 9704)
-    if (clean.length >= 6) {
-      const detected = detectBankFromCardNumber(clean, banks);
-      if (detected && detected.bank) {
-        if (selectedBank?.bin !== detected.bank.bin) {
-          setSelectedBank(detected.bank);
-        }
-        if (detected.isCard && transferType !== 'card') {
-          setTransferType('card');
-          setAutoDetectedMessage(`Đã tự động nhận diện thẻ Napas của ngân hàng ${detected.bank.shortName} (${detected.bin})!`);
-        }
-      }
+    // If starts with 970422, hint between Viettel Money and MBBank without forcing
+    if (clean.startsWith('970422')) {
+      setAutoDetectedMessage('hint_970422');
     } else {
       setAutoDetectedMessage('');
     }
@@ -329,22 +320,60 @@ export default function GeneratorView({
               />
             </div>
 
-            {/* Auto Detection Message Banner */}
-            {autoDetectedMessage && (
+            {/* Viettel Money Specific Guidance */}
+            {(selectedBank?.code === 'VTLMONEY' || selectedBank?.bin === '971005') && (
               <div style={{ 
-                marginTop: '8px', 
-                padding: '8px 12px', 
+                marginTop: '10px', 
+                padding: '10px 14px', 
                 borderRadius: 'var(--radius-sm)', 
-                background: 'rgba(0, 229, 153, 0.12)', 
-                border: '1px solid rgba(0, 229, 153, 0.3)',
-                fontSize: '0.82rem',
-                color: 'var(--emerald-400)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '8px'
+                background: 'rgba(238, 0, 51, 0.08)', 
+                border: '1px solid rgba(238, 0, 51, 0.3)', 
+                fontSize: '0.82rem', 
+                color: '#ff6b81', 
+                lineHeight: 1.5 
               }}>
-                <Info size={15} />
-                <span>{autoDetectedMessage}</span>
+                <strong>📱 Mẹo nhận tiền vào Viettel Money:</strong><br />
+                Để các ngân hàng khác (Cake, VCB, MB, Techcombank,...) quét mã hiện đúng <strong>Tên chủ tài khoản</strong> của bạn, bạn hãy nhập <strong>Số điện thoại đăng ký Viettel Money (10 số)</strong> tại ô Số tài khoản này.
+              </div>
+            )}
+
+            {/* Hint for 970422: Viettel Money vs MBBank */}
+            {autoDetectedMessage === 'hint_970422' && (
+              <div style={{ 
+                marginTop: '10px', 
+                padding: '10px 14px', 
+                borderRadius: 'var(--radius-sm)', 
+                background: 'rgba(0, 229, 153, 0.08)', 
+                border: '1px solid rgba(0, 229, 153, 0.25)', 
+                fontSize: '0.82rem', 
+                color: 'var(--text-main)', 
+                lineHeight: 1.5 
+              }}>
+                <div style={{ marginBottom: '6px', color: 'var(--emerald-400)', fontWeight: 600 }}>
+                  💡 Đầu số 970422 dùng cho cả Thẻ ViettelPay (Viettel Money) và MBBank. Chọn ngân hàng của bạn:
+                </div>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button
+                    type="button"
+                    className={`chip-btn ${selectedBank?.code === 'VTLMONEY' ? 'active' : ''}`}
+                    onClick={() => {
+                      const vtl = banks.find(b => b.code === 'VTLMONEY' || b.bin === '971005');
+                      if (vtl) setSelectedBank(vtl);
+                    }}
+                  >
+                    Viettel Money
+                  </button>
+                  <button
+                    type="button"
+                    className={`chip-btn ${selectedBank?.code === 'MB' ? 'active' : ''}`}
+                    onClick={() => {
+                      const mb = banks.find(b => b.code === 'MB' || b.bin === '970422');
+                      if (mb) setSelectedBank(mb);
+                    }}
+                  >
+                    MBBank
+                  </button>
+                </div>
               </div>
             )}
           </div>

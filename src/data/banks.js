@@ -1,5 +1,5 @@
 // Danh sách các ngân hàng Việt Nam hỗ trợ VietQR / Napas 247
-export const POPULAR_BANK_CODES = ['VCB', 'MB', 'TCB', 'ACB', 'VPB', 'BIDV', 'CTG', 'TPB'];
+export const POPULAR_BANK_CODES = ['VCB', 'MB', 'TCB', 'ACB', 'VPB', 'BIDV', 'CTG', 'TPB', 'VTLMONEY', 'CAKE'];
 
 export const DEFAULT_BANKS = [
   {
