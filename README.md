@@ -1,11 +1,12 @@
-# ⚡ QR Fast - Tạo & Chia Sẻ Link Chuyển Tiền Kèm Mã VietQR Tức Thì
+# ⚡ Chuyển Tiền Nhanh 24/7 - Tạo & Chia Sẻ Link Kèm Mã VietQR Tức Thì
 
-> **QR Fast** là nền tảng web hiện đại giúp tạo và chia sẻ liên kết chuyển khoản ngân hàng kèm mã VietQR (chuẩn Napas 24/7). Mỗi lần nhấn tạo, hệ thống sẽ sinh ra một **đường link chứa ký tự mã hóa ngẫu nhiên** duy nhất, bảo mật và tương thích với hơn 50 ngân hàng tại Việt Nam cùng các ví điện tử hàng đầu.
+> **Chuyển Tiền Nhanh (QR Fast)** là nền tảng web hiện đại giúp tạo và chia sẻ liên kết chuyển khoản ngân hàng kèm mã VietQR (chuẩn Napas 24/7). Mỗi lần nhấn tạo, hệ thống sinh ra một **đường link chứa ký tự mã hóa ngẫu nhiên** duy nhất, bảo mật và tương thích với hơn 50 ngân hàng tại Việt Nam cùng các ví điện tử hàng đầu.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new)
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Vite](https://img.shields.io/badge/Vite-8.x-646CFF?logo=vite)](https://vitejs.dev/)
-[![React](https://img.shields.io/badge/React-19-61DAFB?logo=react)](https://react.dev/)
+🌐 **Trang web chính thức:** [chuyentiennhanh.vercel.app](https://chuyentiennhanh.vercel.app/)  
+📦 **Kho mã nguồn GitHub:** [github.com/tghip26/qrfast](https://github.com/tghip26/qrfast)
+
+[![Website](https://img.shields.io/badge/Website-chuyentiennhanh.vercel.app-00F5A0?style=for-the-badge&logo=vercel)](https://chuyentiennhanh.vercel.app/)
+[![GitHub](https://img.shields.io/badge/GitHub-tghip26%2Fqrfast-0099FF?style=for-the-badge&logo=github)](https://github.com/tghip26/qrfast)
 
 ---
 

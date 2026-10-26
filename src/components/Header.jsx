@@ -1,5 +1,5 @@
 import React from 'react';
-import { QrCode, Sun, Moon, History, PlusCircle } from 'lucide-react';
+import { Sun, Moon, History, PlusCircle, Zap } from 'lucide-react';
 
 function GithubIcon({ size = 18 }) {
   return (
@@ -21,12 +21,23 @@ export default function Header({
   return (
     <header className="header">
       <div className="header-inner">
-        <a href="#/" onClick={(e) => { e.preventDefault(); onGoHome(); }} className="brand-logo">
-          <div className="brand-icon">
-            <QrCode size={22} strokeWidth={2.5} />
+        <a href="#/" onClick={(e) => { e.preventDefault(); onGoHome(); }} className="brand-logo" title="Chuyển Tiền Nhanh 24/7">
+          <div className="brand-vector-container">
+            <img src="./logo.svg" alt="QR Fast Logo" className="brand-vector-img" />
+            <div className="brand-vector-glow"></div>
           </div>
-          <span>QR<span className="gradient-text">Fast</span></span>
-          <span className="brand-badge">24/7</span>
+          <div className="brand-text-group">
+            <div className="brand-title">
+              Chuyển Tiền <span className="gradient-text">Nhanh</span>
+            </div>
+            <div className="brand-tagline">
+              <span>VIETQR • NAPAS 24/7</span>
+            </div>
+          </div>
+          <span className="brand-badge brand-badge-pulse">
+            <span className="status-dot"></span>
+            LIVE
+          </span>
         </a>
 
         <div className="nav-actions">

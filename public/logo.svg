@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Brand Gradients -->
+    <linearGradient id="qrf-primary-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00F5A0" />
+      <stop offset="50%" stop-color="#00D2C4" />
+      <stop offset="100%" stop-color="#0099FF" />
+    </linearGradient>
+    
+    <linearGradient id="qrf-bolt-grad" x1="20%" y1="0%" x2="80%" y2="100%">
+      <stop offset="0%" stop-color="#70FFAF" />
+      <stop offset="45%" stop-color="#00F090" />
+      <stop offset="100%" stop-color="#00B4D8" />
+    </linearGradient>
+
+    <linearGradient id="qrf-bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0c1322" />
+      <stop offset="100%" stop-color="#050811" />
+    </linearGradient>
+
+    <linearGradient id="qrf-border-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(0, 245, 160, 0.6)" />
+      <stop offset="50%" stop-color="rgba(0, 153, 255, 0.3)" />
+      <stop offset="100%" stop-color="rgba(255, 255, 255, 0.1)" />
+    </linearGradient>
+
+    <filter id="qrf-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+
+    <filter id="qrf-drop-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#000000" flood-opacity="0.65" />
+    </filter>
+  </defs>
+
+  <rect x="16" y="16" width="480" height="480" rx="128" fill="url(#qrf-bg-grad)" filter="url(#qrf-drop-shadow)" />
+  <rect x="16" y="16" width="480" height="480" rx="128" fill="none" stroke="url(#qrf-border-grad)" stroke-width="12" />
+
+  <g transform="translate(80, 80)">
+    <rect x="0" y="0" width="130" height="130" rx="34" fill="none" stroke="url(#qrf-primary-grad)" stroke-width="26" />
+    <rect x="36" y="36" width="58" height="58" rx="16" fill="url(#qrf-primary-grad)" />
+  </g>
+
+  <g transform="translate(302, 80)">
+    <rect x="0" y="0" width="130" height="130" rx="34" fill="none" stroke="url(#qrf-primary-grad)" stroke-width="26" />
+    <rect x="36" y="36" width="58" height="58" rx="16" fill="url(#qrf-primary-grad)" />
+  </g>
+
+  <g transform="translate(80, 302)">
+    <rect x="0" y="0" width="130" height="130" rx="34" fill="none" stroke="url(#qrf-primary-grad)" stroke-width="26" />
+    <rect x="36" y="36" width="58" height="58" rx="16" fill="url(#qrf-primary-grad)" />
+  </g>
+
+  <rect x="238" y="96" width="34" height="34" rx="10" fill="#00D2C4" opacity="0.85" />
+  <rect x="238" y="160" width="34" height="34" rx="10" fill="#00F5A0" opacity="0.9" />
+  <rect x="96" y="238" width="34" height="34" rx="10" fill="#0099FF" opacity="0.8" />
+  <rect x="160" y="238" width="34" height="34" rx="10" fill="#00D2C4" opacity="0.85" />
+  <rect x="238" y="238" width="34" height="34" rx="10" fill="#00F5A0" opacity="0.95" />
+
+  <g filter="url(#qrf-glow)">
+    <path d="M352 230 L280 348 L324 348 L272 446 L388 312 L332 312 Z" 
+          fill="url(#qrf-bolt-grad)" 
+          stroke="#0c1322" 
+          stroke-width="8" 
+          stroke-linejoin="round" />
+  </g>
+</svg>

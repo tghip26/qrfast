@@ -188,15 +188,15 @@ export default function GeneratorView({
       {/* Hero Headline */}
       <div className="hero-section">
         <div className="hero-pill">
-          <Sparkles size={15} />
-          <span>Hệ thống tạo mã QR & Link chuyển khoản ngân hàng 24/7</span>
+          <img src="./logo.svg" alt="Logo" style={{ width: '16px', height: '16px', borderRadius: '4px' }} />
+          <span>Hệ thống tạo mã VietQR & Link Chuyển Tiền Nhanh 24/7</span>
         </div>
         <h1 className="hero-title">
-          Tạo link chuyển tiền <br />
-          <span className="gradient-text">Mã Hóa Ngẫu Nhiên</span> kèm VietQR
+          Chuyển Tiền <span className="gradient-text">Nhanh 24/7</span> <br />
+          Tạo Link & Mã VietQR Tức Thì
         </h1>
         <p className="hero-subtitle">
-          Nhập số tài khoản hoặc số thẻ ATM Napas để tạo link chuyển khoản ngẫu nhiên. Quét siêu nhạy trên 100% ứng dụng ngân hàng và ví điện tử.
+          Tạo liên kết thanh toán chứa chuỗi mã hóa ngẫu nhiên độc nhất. Tương thích 100% với hơn 50 ngân hàng tại Việt Nam và ví Viettel Money, MoMo, Cake, ZaloPay.
         </p>
       </div>
 

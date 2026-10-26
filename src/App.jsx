@@ -197,11 +197,16 @@ export default function App() {
 
       {/* Footer */}
       <footer className="footer">
-        <p>
-          <strong>QR Fast</strong> - Ứng dụng tạo mã liên kết chuyển tiền ngẫu nhiên &amp; VietQR Napas 24/7.
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px', marginBottom: '8px' }}>
+          <img src="./logo.svg" alt="Logo" style={{ width: '22px', height: '22px', borderRadius: '6px' }} />
+          <strong style={{ color: 'var(--text-main)', fontSize: '0.96rem' }}>Chuyển Tiền Nhanh 24/7</strong>
+          <span className="brand-badge">VietQR • Napas</span>
+        </div>
+        <p style={{ color: 'var(--text-muted)' }}>
+          Hệ thống tạo mã VietQR chuẩn ngân hàng và chia sẻ liên kết mã hóa ngẫu nhiên an toàn.
         </p>
         <p style={{ marginTop: '6px', fontSize: '0.8rem' }}>
-          Mã nguồn mở trên <a href="https://github.com/tghip26/qrfast" target="_blank" rel="noopener noreferrer">GitHub</a>. Không lưu trữ thông tin thẻ hay mật khẩu ngân hàng.
+          Triển khai tại <a href="https://chuyentiennhanh.vercel.app" target="_blank" rel="noopener noreferrer">chuyentiennhanh.vercel.app</a> • Mã nguồn mở trên <a href="https://github.com/tghip26/qrfast" target="_blank" rel="noopener noreferrer">GitHub</a>.
         </p>
       </footer>
 
