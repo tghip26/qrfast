@@ -1,75 +1,57 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
   <defs>
-    <!-- Brand Gradients -->
-    <linearGradient id="qrf-primary-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00F5A0" />
-      <stop offset="50%" stop-color="#00D2C4" />
-      <stop offset="100%" stop-color="#0099FF" />
-    </linearGradient>
-    
-    <linearGradient id="qrf-bolt-grad" x1="20%" y1="0%" x2="80%" y2="100%">
-      <stop offset="0%" stop-color="#70FFAF" />
-      <stop offset="45%" stop-color="#00F090" />
-      <stop offset="100%" stop-color="#00B4D8" />
+    <!-- Vibrant Brand Gradients (Bright & Vivid) -->
+    <linearGradient id="qrf-brand" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00C853" />
+      <stop offset="100%" stop-color="#0091EA" />
     </linearGradient>
 
-    <linearGradient id="qrf-bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0c1322" />
-      <stop offset="100%" stop-color="#050811" />
+    <linearGradient id="qrf-bolt" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF9100" />
+      <stop offset="100%" stop-color="#FFD600" />
     </linearGradient>
 
-    <linearGradient id="qrf-border-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="rgba(0, 245, 160, 0.6)" />
-      <stop offset="50%" stop-color="rgba(0, 153, 255, 0.3)" />
-      <stop offset="100%" stop-color="rgba(255, 255, 255, 0.1)" />
-    </linearGradient>
-
-    <!-- Glowing Filter -->
-    <filter id="qrf-glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="12" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
-    </filter>
-
-    <filter id="qrf-drop-shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#000000" flood-opacity="0.65" />
+    <!-- Crisp Soft Shadow -->
+    <filter id="qrf-soft-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#000000" flood-opacity="0.12" />
     </filter>
   </defs>
 
-  <!-- Squircle Canvas with Border -->
-  <rect x="16" y="16" width="480" height="480" rx="128" fill="url(#qrf-bg-grad)" filter="url(#qrf-drop-shadow)" />
-  <rect x="16" y="16" width="480" height="480" rx="128" fill="none" stroke="url(#qrf-border-grad)" stroke-width="12" />
+  <!-- Bright White Rounded Squircle (Clean, Pops on any tab color) -->
+  <rect x="20" y="20" width="472" height="472" rx="118" fill="#FFFFFF" filter="url(#qrf-soft-shadow)" stroke="#E0E6ED" stroke-width="6" />
 
-  <!-- QR Matrix Finder: Top-Left -->
-  <g transform="translate(80, 80)">
-    <rect x="0" y="0" width="130" height="130" rx="34" fill="none" stroke="url(#qrf-primary-grad)" stroke-width="26" />
-    <rect x="36" y="36" width="58" height="58" rx="16" fill="url(#qrf-primary-grad)" />
+  <!-- QR Corner 1: Top-Left -->
+  <g transform="translate(84, 84)">
+    <rect x="0" y="0" width="124" height="124" rx="30" fill="none" stroke="url(#qrf-brand)" stroke-width="24" />
+    <rect x="36" y="36" width="52" height="52" rx="14" fill="url(#qrf-brand)" />
   </g>
 
-  <!-- QR Matrix Finder: Top-Right -->
-  <g transform="translate(302, 80)">
-    <rect x="0" y="0" width="130" height="130" rx="34" fill="none" stroke="url(#qrf-primary-grad)" stroke-width="26" />
-    <rect x="36" y="36" width="58" height="58" rx="16" fill="url(#qrf-primary-grad)" />
+  <!-- QR Corner 2: Top-Right -->
+  <g transform="translate(304, 84)">
+    <rect x="0" y="0" width="124" height="124" rx="30" fill="none" stroke="url(#qrf-brand)" stroke-width="24" />
+    <rect x="36" y="36" width="52" height="52" rx="14" fill="url(#qrf-brand)" />
   </g>
 
-  <!-- QR Matrix Finder: Bottom-Left -->
-  <g transform="translate(80, 302)">
-    <rect x="0" y="0" width="130" height="130" rx="34" fill="none" stroke="url(#qrf-primary-grad)" stroke-width="26" />
-    <rect x="36" y="36" width="58" height="58" rx="16" fill="url(#qrf-primary-grad)" />
+  <!-- QR Corner 3: Bottom-Left -->
+  <g transform="translate(84, 304)">
+    <rect x="0" y="0" width="124" height="124" rx="30" fill="none" stroke="url(#qrf-brand)" stroke-width="24" />
+    <rect x="36" y="36" width="52" height="52" rx="14" fill="url(#qrf-brand)" />
   </g>
 
-  <!-- Decorative QR Data Dots -->
-  <rect x="238" y="96" width="34" height="34" rx="10" fill="#00D2C4" opacity="0.85" />
-  <rect x="238" y="160" width="34" height="34" rx="10" fill="#00F5A0" opacity="0.9" />
-  <rect x="96" y="238" width="34" height="34" rx="10" fill="#0099FF" opacity="0.8" />
-  <rect x="160" y="238" width="34" height="34" rx="10" fill="#00D2C4" opacity="0.85" />
-  <rect x="238" y="238" width="34" height="34" rx="10" fill="#00F5A0" opacity="0.95" />
+  <!-- Decorative QR Data Points -->
+  <rect x="238" y="94" width="36" height="36" rx="10" fill="#00C853" />
+  <rect x="238" y="162" width="36" height="36" rx="10" fill="#0091EA" />
+  <rect x="94" y="238" width="36" height="36" rx="10" fill="#00C853" />
+  <rect x="162" y="238" width="36" height="36" rx="10" fill="#0091EA" />
 
-  <!-- Dynamic Electric Lightning Bolt: Fast Transfer Speed Icon -->
-  <g filter="url(#qrf-glow)">
-    <path d="M352 230 L280 348 L324 348 L272 446 L388 312 L332 312 Z" 
-          fill="url(#qrf-bolt-grad)" 
-          stroke="#0c1322" 
-          stroke-width="8" 
+  <!-- Speed Lightning Bolt in Bottom-Right (Vibrant Golden Amber) -->
+  <g transform="translate(260, 240)">
+    <circle cx="95" cy="95" r="76" fill="#F0FDF4" stroke="#DCFCE7" stroke-width="4" />
+    <!-- Lightning Bolt -->
+    <path d="M102 42 L66 102 L98 102 L86 148 L130 92 L98 92 Z" 
+          fill="url(#qrf-bolt)" 
+          stroke="#FFFFFF" 
+          stroke-width="5" 
           stroke-linejoin="round" />
   </g>
 </svg>
