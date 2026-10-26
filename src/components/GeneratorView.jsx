@@ -6,7 +6,7 @@ import {
   CreditCard, Check, ArrowRight, AlertCircle, Info
 } from 'lucide-react';
 import { POPULAR_BANK_CODES } from '../data/banks';
-import { buildVietQRUrl, formatVND, cleanDigits, numberToVietnameseWords } from '../utils/vietqr';
+import { buildVietQRUrl, formatVND, formatNumberDots, cleanDigits, numberToVietnameseWords } from '../utils/vietqr';
 import { generateVietQREmvco, detectBankFromCardNumber } from '../utils/emvco';
 import { encodePaymentData } from '../utils/cryptoLink';
 
@@ -59,6 +59,34 @@ export default function GeneratorView({
       setAutoDetectedMessage('hint_970422');
     } else {
       setAutoDetectedMessage('');
+    }
+  };
+
+  // Handle amount change (clean digits, no currency symbols)
+  const handleAmountChange = (e) => {
+    const rawVal = e.target.value;
+    const digits = cleanDigits(rawVal).replace(/^0+(?=\d)/, '');
+    if (digits.length <= 13) {
+      setAmount(digits);
+    }
+  };
+
+  // Handle backspace when cursor is right after a thousand dot
+  const handleAmountKeyDown = (e) => {
+    if (e.key === 'Backspace') {
+      const input = e.target;
+      const start = input.selectionStart;
+      const end = input.selectionEnd;
+      if (start === end && start > 0) {
+        const charBefore = input.value[start - 1];
+        if (charBefore === '.' || charBefore === ',') {
+          e.preventDefault();
+          const before = input.value.slice(0, start - 2);
+          const after = input.value.slice(start);
+          const nextVal = cleanDigits(before + after).replace(/^0+(?=\d)/, '');
+          setAmount(nextVal);
+        }
+      }
     }
   };
 
@@ -409,25 +437,29 @@ export default function GeneratorView({
               <span>Số tiền chuyển</span>
               <span className="label-hint">Tùy chọn (để trống nếu người chuyển tự nhập)</span>
             </div>
-            <div className="input-wrapper">
-              <DollarSign size={18} className="input-icon-left" />
+            <div className="input-wrapper amount-input-wrapper">
               <input 
                 type="text"
-                className="form-input has-left-icon"
-                placeholder="Ví dụ: 200000"
-                value={amount ? formatVND(amount) : ''}
-                onChange={(e) => setAmount(cleanDigits(e.target.value))}
+                inputMode="numeric"
+                className="form-input amount-input-field"
+                placeholder="Ví dụ: 200.000"
+                value={amount ? formatNumberDots(amount) : ''}
+                onChange={handleAmountChange}
+                onKeyDown={handleAmountKeyDown}
               />
-              {amount && (
-                <button 
-                  type="button" 
-                  className="input-action-btn"
-                  onClick={handleClearAmount}
-                  title="Xóa số tiền"
-                >
-                  <Trash2 size={16} />
-                </button>
-              )}
+              <div className="amount-input-addons">
+                <span className="amount-currency-unit">VND</span>
+                {amount && (
+                  <button 
+                    type="button" 
+                    className="amount-clear-btn"
+                    onClick={handleClearAmount}
+                    title="Xóa số tiền"
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* Vietnamese Words representation */}

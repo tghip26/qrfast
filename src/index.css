@@ -472,6 +472,63 @@ button {
   background: rgba(255, 255, 255, 0.05);
 }
 
+/* Amount Input Specific Styles */
+.amount-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.amount-input-field {
+  width: 100%;
+  padding: 13px 92px 13px 16px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.amount-input-addons {
+  position: absolute;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  pointer-events: auto;
+}
+
+.amount-currency-unit {
+  font-size: 0.74rem;
+  font-weight: 800;
+  color: var(--emerald-400);
+  background: rgba(0, 229, 153, 0.12);
+  border: 1px solid rgba(0, 229, 153, 0.28);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  user-select: none;
+  pointer-events: none;
+  letter-spacing: 0.05em;
+}
+
+.amount-clear-btn {
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  color: var(--text-dim);
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--border-subtle);
+  transition: all var(--transition-fast);
+  cursor: pointer;
+}
+
+.amount-clear-btn:hover {
+  color: var(--rose-400);
+  background: rgba(244, 63, 94, 0.12);
+  border-color: rgba(244, 63, 94, 0.3);
+}
+
 /* Bank Selector Box */
 .bank-select-btn {
   width: 100%;
@@ -1421,6 +1478,11 @@ button {
 
   .form-input.has-left-icon {
     padding-left: 38px;
+  }
+
+  .amount-input-field {
+    padding: 11px 86px 11px 14px;
+    font-size: 16px;
   }
 
   .chips-list {

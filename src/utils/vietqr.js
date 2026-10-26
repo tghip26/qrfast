@@ -63,6 +63,18 @@ export function formatVND(value) {
 }
 
 /**
+ * Formats digits with thousand dots only (e.g. "1.370.000") without any currency symbol (No $, No đ)
+ */
+export function formatNumberDots(value) {
+  if (!value && value !== 0) return '';
+  const clean = cleanDigits(value).replace(/^0+(?=\d)/, '');
+  if (!clean) return '';
+  const num = parseInt(clean, 10);
+  if (isNaN(num)) return '';
+  return new Intl.NumberFormat('vi-VN').format(num);
+}
+
+/**
  * Cleans string to digits only
  */
 export function cleanDigits(val) {
