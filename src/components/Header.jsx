@@ -14,7 +14,7 @@ export default function Header({
       <div className="header-inner">
         <a href="#/" onClick={(e) => { e.preventDefault(); onGoHome(); }} className="brand-logo" title="Chuyển Tiền Nhanh 24/7">
           <div className="brand-vector-container">
-            <img src="./logo.svg?v=20261026" alt="Logo Chuyển Tiền Nhanh" className="brand-vector-img" />
+            <img src="./logo.svg?v=20261026c" alt="Logo Chuyển Tiền Nhanh" className="brand-vector-img" />
             <div className="brand-vector-glow"></div>
           </div>
           <div className="brand-text-group">
@@ -25,24 +25,20 @@ export default function Header({
               <span>VIETQR • NAPAS 24/7</span>
             </div>
           </div>
-          <span className="brand-badge brand-badge-pulse">
-            <span className="status-dot"></span>
-            LIVE
-          </span>
         </a>
 
         <div className="nav-actions">
           {isPaymentView ? (
             <button className="icon-btn active" onClick={onGoHome} title="Tạo mã QR mới">
-              <PlusCircle size={17} />
-              <span className="d-none-mobile">Tạo mã QR mới</span>
+              <PlusCircle size={16} />
+              <span className="d-none-mobile">Tạo mã mới</span>
             </button>
           ) : (
             <button className="icon-btn" onClick={onOpenHistory} title="Lịch sử tạo link">
-              <History size={17} />
+              <History size={16} />
               <span className="d-none-mobile">Lịch sử</span>
               {historyCount > 0 && (
-                <span className="brand-badge" style={{ padding: '1px 6px', fontSize: '0.65rem' }}>
+                <span className="history-count-badge">
                   {historyCount}
                 </span>
               )}
@@ -54,7 +50,7 @@ export default function Header({
             onClick={onToggleTheme} 
             title={theme === 'dark' ? 'Chuyển sang giao diện sáng' : 'Chuyển sang giao diện tối'}
           >
-            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            {theme === 'dark' ? <Sun size={17} /> : <Moon size={17} />}
           </button>
         </div>
       </div>

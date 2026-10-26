@@ -13,6 +13,7 @@
   --bg-card-hover: rgba(28, 38, 64, 0.85);
   --bg-input: rgba(15, 23, 42, 0.8);
   --bg-glass: rgba(15, 23, 42, 0.65);
+  --bg-header: rgba(8, 12, 20, 0.95);
   
   --border-subtle: rgba(255, 255, 255, 0.08);
   --border-focus: rgba(0, 229, 153, 0.5);
@@ -57,6 +58,7 @@
   --bg-card-hover: #ffffff;
   --bg-input: #f8fafc;
   --bg-glass: rgba(255, 255, 255, 0.8);
+  --bg-header: rgba(255, 255, 255, 0.96);
   
   --border-subtle: rgba(0, 0, 0, 0.08);
   --border-focus: rgba(0, 180, 120, 0.6);
@@ -136,18 +138,20 @@ button {
 .header {
   position: sticky;
   top: 0;
-  z-index: 50;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  background: var(--bg-glass);
+  z-index: 100;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: var(--bg-header);
   border-bottom: 1px solid var(--border-subtle);
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.08);
   transition: all var(--transition-fast);
 }
 
 .header-inner {
   max-width: 1240px;
   margin: 0 auto;
-  padding: 10px 18px;
+  padding: 8px 18px;
+  min-height: 52px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -156,7 +160,7 @@ button {
 .brand-logo {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
   text-decoration: none;
   color: var(--text-main);
   transition: transform var(--transition-fast);
@@ -168,8 +172,8 @@ button {
 
 .brand-vector-container {
   position: relative;
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -179,24 +183,24 @@ button {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 200, 83, 0.22);
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0, 229, 153, 0.3);
   transition: transform var(--transition-spring), box-shadow var(--transition-normal);
 }
 
 .brand-logo:hover .brand-vector-img {
-  transform: scale(1.08) rotate(-3deg);
-  box-shadow: 0 8px 24px rgba(0, 200, 83, 0.38);
+  transform: scale(1.06) rotate(-2deg);
+  box-shadow: 0 6px 18px rgba(0, 229, 153, 0.45);
 }
 
 .brand-vector-glow {
   position: absolute;
   inset: -2px;
-  border-radius: 14px;
-  background: radial-gradient(circle, rgba(0, 200, 83, 0.25) 0%, transparent 70%);
-  filter: blur(8px);
+  border-radius: 12px;
+  background: radial-gradient(circle, rgba(0, 229, 153, 0.25) 0%, transparent 70%);
+  filter: blur(6px);
   z-index: -1;
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
 .brand-text-group {
@@ -207,54 +211,37 @@ button {
 
 .brand-title {
   font-family: var(--font-heading);
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 800;
   color: var(--text-main);
   letter-spacing: -0.02em;
 }
 
 .brand-tagline {
-  font-size: 0.62rem;
+  font-size: 0.58rem;
   font-weight: 700;
   color: var(--text-dim);
   letter-spacing: 0.08em;
-  margin-top: 2px;
+  margin-top: 1px;
 }
 
-.brand-badge-pulse {
+.history-count-badge {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  justify-content: center;
+  padding: 1px 6px;
   font-size: 0.65rem;
   font-weight: 800;
-  padding: 3px 8px;
   border-radius: var(--radius-full);
-  background: rgba(0, 245, 160, 0.12);
-  color: #00F5A0;
-  border: 1px solid rgba(0, 245, 160, 0.3);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-}
-
-.status-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #00F5A0;
-  box-shadow: 0 0 8px #00F5A0;
-  animation: pulse-dot 1.8s infinite;
-}
-
-@keyframes pulse-dot {
-  0% { transform: scale(0.9); opacity: 0.6; }
-  50% { transform: scale(1.2); opacity: 1; }
-  100% { transform: scale(0.9); opacity: 0.6; }
+  background: rgba(0, 229, 153, 0.15);
+  color: var(--emerald-400);
+  border: 1px solid rgba(0, 229, 153, 0.3);
 }
 
 .nav-actions {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 
 .icon-btn {
@@ -1407,7 +1394,8 @@ button {
   }
 
   .header-inner {
-    padding: 8px 12px;
+    padding: 6px 12px;
+    min-height: 48px;
   }
 
   .brand-logo {
@@ -1415,17 +1403,16 @@ button {
   }
 
   .brand-vector-container {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
   }
 
   .brand-title {
-    font-size: 1.05rem;
+    font-size: 1.02rem;
   }
 
-  .brand-badge-pulse {
-    padding: 2px 6px;
-    font-size: 0.6rem;
+  .brand-tagline {
+    font-size: 0.55rem;
   }
 
   .hero-section {

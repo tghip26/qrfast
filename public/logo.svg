@@ -1,55 +1,55 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
   <defs>
-    <linearGradient id="ctn-emerald-cyan" x1="0%" y1="0%" x2="100%" y2="100%">
+    <!-- Radiant Bright Emerald to Cyan Gradient -->
+    <linearGradient id="ctn-bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#00F5A0" />
-      <stop offset="50%" stop-color="#00D285" />
+      <stop offset="45%" stop-color="#00D285" />
       <stop offset="100%" stop-color="#00A3FF" />
     </linearGradient>
 
-    <linearGradient id="ctn-cyan-blue" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#00A3FF" />
-      <stop offset="100%" stop-color="#00F5A0" />
+    <!-- Subtle Golden Sparkle Gradient -->
+    <linearGradient id="ctn-gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFF275" />
+      <stop offset="100%" stop-color="#FFB300" />
     </linearGradient>
 
-    <linearGradient id="ctn-lightning" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFE600" />
-      <stop offset="100%" stop-color="#FF9500" />
-    </linearGradient>
+    <!-- Inner Soft Radial Light -->
+    <radialGradient id="ctn-radial-light" cx="35%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.32" />
+      <stop offset="100%" stop-color="#FFFFFF" stop-opacity="0" />
+    </radialGradient>
 
-    <filter id="ctn-soft-shadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#000000" flood-opacity="0.1" />
+    <!-- Drop Shadow for the Dollar Sign -->
+    <filter id="ctn-icon-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#023b2b" flood-opacity="0.28" />
     </filter>
 
-    <filter id="ctn-bolt-glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#FF9500" flood-opacity="0.35" />
+    <filter id="ctn-outer-glow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="16" flood-color="#00D285" flood-opacity="0.32" />
     </filter>
   </defs>
 
-  <rect x="20" y="20" width="472" height="472" rx="124" fill="#FFFFFF" filter="url(#ctn-soft-shadow)" stroke="#E6EDF5" stroke-width="6" />
+  <!-- Outer Rounded Squircle Base (Bright Neon Gradient) -->
+  <rect x="24" y="24" width="464" height="464" rx="124" fill="url(#ctn-bg-grad)" filter="url(#ctn-outer-glow)" />
 
-  <path d="M 256 80 A 176 176 0 0 1 432 256 A 176 176 0 0 1 385 366" 
-        fill="none" 
-        stroke="url(#ctn-emerald-cyan)" 
-        stroke-width="36" 
-        stroke-linecap="round" />
-  
-  <polygon points="400,380 370,340 436,346" fill="#00A3FF" />
+  <!-- Subtle Glass Highlight Overlay & Border -->
+  <rect x="24" y="24" width="464" height="464" rx="124" fill="url(#ctn-radial-light)" stroke="#FFFFFF" stroke-opacity="0.45" stroke-width="4" />
 
-  <path d="M 256 432 A 176 176 0 0 1 80 256 A 176 176 0 0 1 127 146" 
-        fill="none" 
-        stroke="url(#ctn-cyan-blue)" 
-        stroke-width="36" 
-        stroke-linecap="round" />
+  <!-- The Bold Modern FinTech Currency Symbol ($) -->
+  <g filter="url(#ctn-icon-shadow)">
+    <!-- Vertical Stem of $ -->
+    <line x1="256" y1="68" x2="256" y2="444" stroke="#FFFFFF" stroke-width="44" stroke-linecap="round" />
 
-  <polygon points="112,132 142,172 76,166" fill="#00F5A0" />
-
-  <circle cx="256" cy="256" r="102" fill="#F4FBF7" stroke="#D1FAE5" stroke-width="6" />
-
-  <g filter="url(#ctn-bolt-glow)">
-    <path d="M 266 182 L 216 262 L 254 262 L 240 326 L 298 246 L 260 246 Z" 
-          fill="url(#ctn-lightning)" 
+    <!-- S-Curves of $ -->
+    <path d="M 352 196 C 352 136, 308 108, 256 108 C 204 108, 160 138, 160 194 C 160 258, 352 254, 352 318 C 352 374, 308 404, 256 404 C 200 404, 156 372, 156 316" 
+          fill="none" 
           stroke="#FFFFFF" 
-          stroke-width="5" 
+          stroke-width="52" 
+          stroke-linecap="round" 
           stroke-linejoin="round" />
   </g>
+
+  <!-- Dynamic Speed Transfer Sparkle in Top-Right -->
+  <path d="M 390 76 Q 390 108 418 112 Q 390 116 390 148 Q 390 116 362 112 Q 390 108 390 76 Z" 
+        fill="url(#ctn-gold)" />
 </svg>

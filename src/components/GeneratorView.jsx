@@ -216,7 +216,7 @@ export default function GeneratorView({
       {/* Hero Headline */}
       <div className="hero-section">
         <div className="hero-pill">
-          <img src="./logo.svg?v=20261026" alt="Logo" style={{ width: '16px', height: '16px', borderRadius: '4px' }} />
+          <img src="./logo.svg?v=20261026c" alt="Logo" style={{ width: '16px', height: '16px', borderRadius: '4px' }} />
           <span>Hệ thống tạo mã VietQR & Link Chuyển Tiền Nhanh 24/7</span>
         </div>
         <h1 className="hero-title">
