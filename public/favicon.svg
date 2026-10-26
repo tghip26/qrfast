@@ -1,55 +1,61 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
   <defs>
-    <!-- Vibrant Brand Gradients (Bright & Vivid) -->
-    <linearGradient id="qrf-brand" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#00C853" />
-      <stop offset="100%" stop-color="#0091EA" />
+    <!-- Brand Gradients (Bright & Vivid) -->
+    <linearGradient id="ctn-emerald-cyan" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00F5A0" />
+      <stop offset="50%" stop-color="#00D285" />
+      <stop offset="100%" stop-color="#00A3FF" />
     </linearGradient>
 
-    <linearGradient id="qrf-bolt" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FF9100" />
-      <stop offset="100%" stop-color="#FFD600" />
+    <linearGradient id="ctn-cyan-blue" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00A3FF" />
+      <stop offset="100%" stop-color="#00F5A0" />
     </linearGradient>
 
-    <!-- Crisp Soft Shadow -->
-    <filter id="qrf-soft-shadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="#000000" flood-opacity="0.12" />
+    <linearGradient id="ctn-lightning" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFE600" />
+      <stop offset="100%" stop-color="#FF9500" />
+    </linearGradient>
+
+    <filter id="ctn-soft-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#000000" flood-opacity="0.1" />
+    </filter>
+
+    <filter id="ctn-bolt-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="2" stdDeviation="6" flood-color="#FF9500" flood-opacity="0.35" />
     </filter>
   </defs>
 
-  <!-- Bright White Rounded Squircle (Clean, Pops on any tab color) -->
-  <rect x="20" y="20" width="472" height="472" rx="118" fill="#FFFFFF" filter="url(#qrf-soft-shadow)" stroke="#E0E6ED" stroke-width="6" />
+  <!-- Clean Bright White Squircle Base -->
+  <rect x="20" y="20" width="472" height="472" rx="124" fill="#FFFFFF" filter="url(#ctn-soft-shadow)" stroke="#E6EDF5" stroke-width="6" />
 
-  <!-- QR Corner 1: Top-Left -->
-  <g transform="translate(84, 84)">
-    <rect x="0" y="0" width="124" height="124" rx="30" fill="none" stroke="url(#qrf-brand)" stroke-width="24" />
-    <rect x="36" y="36" width="52" height="52" rx="14" fill="url(#qrf-brand)" />
-  </g>
+  <!-- Outer Dynamic Transfer Orbit Ring: Top-Right Arc -->
+  <path d="M 256 80 A 176 176 0 0 1 432 256 A 176 176 0 0 1 385 366" 
+        fill="none" 
+        stroke="url(#ctn-emerald-cyan)" 
+        stroke-width="36" 
+        stroke-linecap="round" />
+  
+  <!-- Arrow Head on Top Arc -->
+  <polygon points="400,380 370,340 436,346" fill="#00A3FF" />
 
-  <!-- QR Corner 2: Top-Right -->
-  <g transform="translate(304, 84)">
-    <rect x="0" y="0" width="124" height="124" rx="30" fill="none" stroke="url(#qrf-brand)" stroke-width="24" />
-    <rect x="36" y="36" width="52" height="52" rx="14" fill="url(#qrf-brand)" />
-  </g>
+  <!-- Outer Dynamic Transfer Orbit Ring: Bottom-Left Arc -->
+  <path d="M 256 432 A 176 176 0 0 1 80 256 A 176 176 0 0 1 127 146" 
+        fill="none" 
+        stroke="url(#ctn-cyan-blue)" 
+        stroke-width="36" 
+        stroke-linecap="round" />
 
-  <!-- QR Corner 3: Bottom-Left -->
-  <g transform="translate(84, 304)">
-    <rect x="0" y="0" width="124" height="124" rx="30" fill="none" stroke="url(#qrf-brand)" stroke-width="24" />
-    <rect x="36" y="36" width="52" height="52" rx="14" fill="url(#qrf-brand)" />
-  </g>
+  <!-- Arrow Head on Bottom Arc -->
+  <polygon points="112,132 142,172 76,166" fill="#00F5A0" />
 
-  <!-- Decorative QR Data Points -->
-  <rect x="238" y="94" width="36" height="36" rx="10" fill="#00C853" />
-  <rect x="238" y="162" width="36" height="36" rx="10" fill="#0091EA" />
-  <rect x="94" y="238" width="36" height="36" rx="10" fill="#00C853" />
-  <rect x="162" y="238" width="36" height="36" rx="10" fill="#0091EA" />
+  <!-- Center Luminous Coin / Badge -->
+  <circle cx="256" cy="256" r="102" fill="#F4FBF7" stroke="#D1FAE5" stroke-width="6" />
 
-  <!-- Speed Lightning Bolt in Bottom-Right (Vibrant Golden Amber) -->
-  <g transform="translate(260, 240)">
-    <circle cx="95" cy="95" r="76" fill="#F0FDF4" stroke="#DCFCE7" stroke-width="4" />
-    <!-- Lightning Bolt -->
-    <path d="M102 42 L66 102 L98 102 L86 148 L130 92 L98 92 Z" 
-          fill="url(#qrf-bolt)" 
+  <!-- Instant Speed Lightning Bolt (Fast Transfer 24/7) -->
+  <g filter="url(#ctn-bolt-glow)">
+    <path d="M 266 182 L 216 262 L 254 262 L 240 326 L 298 246 L 260 246 Z" 
+          fill="url(#ctn-lightning)" 
           stroke="#FFFFFF" 
           stroke-width="5" 
           stroke-linejoin="round" />

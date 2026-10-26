@@ -314,19 +314,29 @@ export default function PaymentView({
           </div>
 
           {/* Account Name */}
-          {data.accountName && (
-            <div className="payment-data-item">
-              <div>
-                <div className="data-item-label">Tên người nhận</div>
+          <div className="payment-data-item" style={{ background: 'rgba(0, 229, 153, 0.04)', borderColor: 'rgba(0, 229, 153, 0.2)' }}>
+            <div>
+              <div className="data-item-label">Tên chủ tài khoản thụ hưởng</div>
+              {data.accountName ? (
                 <div className="data-item-val" style={{ textTransform: 'uppercase' }}>
                   {data.accountName}
                 </div>
-              </div>
-              <span className="brand-badge" style={{ alignSelf: 'center' }}>
-                Chính chủ
-              </span>
+              ) : (
+                <>
+                  <div style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--text-main)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <ShieldCheck size={16} color="var(--emerald-400)" />
+                    <span>Tự động nhận diện chính chủ (Napas 24/7)</span>
+                  </div>
+                  <div style={{ fontSize: '0.74rem', color: 'var(--text-dim)', marginTop: '2px' }}>
+                    Tên chính chủ hiển thị ngay khi quét mã QR trên app ngân hàng
+                  </div>
+                </>
+              )}
             </div>
-          )}
+            <span className="brand-badge" style={{ alignSelf: 'center', borderColor: 'rgba(0, 229, 153, 0.35)', color: 'var(--emerald-400)', background: 'rgba(0, 229, 153, 0.1)' }}>
+              Napas 24/7
+            </span>
+          </div>
 
           {/* Bank Full Name */}
           <div className="payment-data-item">

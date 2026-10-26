@@ -188,7 +188,7 @@ export default function GeneratorView({
       {/* Hero Headline */}
       <div className="hero-section">
         <div className="hero-pill">
-          <img src="./logo.svg" alt="Logo" style={{ width: '16px', height: '16px', borderRadius: '4px' }} />
+          <img src="./logo.svg?v=20261026" alt="Logo" style={{ width: '16px', height: '16px', borderRadius: '4px' }} />
           <span>Hệ thống tạo mã VietQR & Link Chuyển Tiền Nhanh 24/7</span>
         </div>
         <h1 className="hero-title">
@@ -378,21 +378,28 @@ export default function GeneratorView({
             )}
           </div>
 
-          {/* 3. Account Name */}
+          {/* 3. Account Name - Auto-Identified via Napas 24/7 (NO manual typing) */}
           <div className="form-group">
             <div className="form-label">
-              <span>Tên chủ tài khoản</span>
-              <span className="label-hint">Tùy chọn (để người gửi đối chiếu)</span>
+              <span>Tên chủ tài khoản thụ hưởng</span>
+              <span className="napas-auto-badge">
+                <span className="status-dot"></span> Tự động nhận diện
+              </span>
             </div>
-            <div className="input-wrapper">
-              <User size={18} className="input-icon-left" />
-              <input 
-                type="text"
-                className="form-input has-left-icon"
-                placeholder="Ví dụ: NGUYEN VAN A"
-                value={accountName}
-                onChange={(e) => setAccountName(e.target.value.toUpperCase())}
-              />
+
+            <div className="auto-verified-card">
+              <div className="verified-icon-badge">
+                <ShieldCheck size={20} color="var(--emerald-400)" />
+              </div>
+              <div className="verified-info">
+                <div className="verified-title">
+                  Tự động tra cứu chính chủ qua Napas 24/7
+                </div>
+                <div className="verified-desc">
+                  Tên chủ tài khoản liên kết với số {transferType === 'card' ? 'thẻ ATM Napas' : 'tài khoản'} <strong>{accountNo || '...'}</strong> ({selectedBank?.shortName || 'Ngân hàng'}) sẽ tự động hiển thị chính xác 100% trên app ngân hàng người chuyển khi quét mã QR.
+                </div>
+              </div>
+              <span className="napas-chip">Napas 24/7</span>
             </div>
           </div>
 
@@ -563,9 +570,11 @@ export default function GeneratorView({
                 )
               ) : (
                 <div className="qr-placeholder">
-                  <QrCode size={48} strokeWidth={1.5} />
-                  <span style={{ fontSize: '0.84rem', textAlign: 'center', padding: '0 12px' }}>
-                    Nhập số tài khoản hoặc số thẻ Napas để xem trước mã QR tự động
+                  <div className="preview-placeholder-badge">
+                    <Zap size={32} color="var(--emerald-400)" />
+                  </div>
+                  <span style={{ fontSize: '0.84rem', textAlign: 'center', padding: '0 12px', color: 'var(--text-muted)' }}>
+                    Nhập số tài khoản hoặc số thẻ để hiển thị mã chuyển tiền tự động
                   </span>
                 </div>
               )}
@@ -606,12 +615,12 @@ export default function GeneratorView({
                 <span className="meta-label">Số tài khoản / Thẻ</span>
                 <span className="meta-value">{accountNo || '---'}</span>
               </div>
-              {accountName && (
-                <div className="meta-row">
-                  <span className="meta-label">Người nhận</span>
-                  <span className="meta-value">{accountName}</span>
-                </div>
-              )}
+              <div className="meta-row">
+                <span className="meta-label">Chủ tài khoản</span>
+                <span className="meta-value" style={{ color: 'var(--emerald-400)', display: 'inline-flex', alignItems: 'center', gap: '4px', fontWeight: 600 }}>
+                  <ShieldCheck size={14} /> Tự động nhận diện (Napas 24/7)
+                </span>
+              </div>
               {amount && Number(cleanDigits(amount)) > 0 && (
                 <div className="meta-row">
                   <span className="meta-label">Số tiền</span>
@@ -630,7 +639,7 @@ export default function GeneratorView({
 
             {/* Helpful screen scan tip */}
             <div style={{ marginTop: '16px', padding: '10px 12px', borderRadius: 'var(--radius-sm)', background: 'var(--bg-input)', fontSize: '0.76rem', color: 'var(--text-dim)', textAlign: 'left', lineHeight: 1.5 }}>
-              💡 <strong>Mẹo quét:</strong> Nếu camera điện thoại quét trực tiếp trên màn hình máy tính bị chói sáng hoặc sọc màn hình, bạn hãy bấm <strong>"Tải ảnh mã QR"</strong> $\rightarrow$ Mở app ngân hàng $\rightarrow$ Chọn <strong>Quét QR</strong> $\rightarrow$ Chọn <strong>"Chọn ảnh từ thư viện"</strong>.
+              💡 <strong>Mẹo quét:</strong> Nếu camera điện thoại quét trực tiếp trên màn hình máy tính bị chói sáng hoặc sọc màn hình, bạn hãy bấm <strong>"Tải ảnh mã QR"</strong> → Mở app ngân hàng → Chọn <strong>Quét QR</strong> → Chọn <strong>"Chọn ảnh từ thư viện"</strong>.
             </div>
           </div>
         </div>

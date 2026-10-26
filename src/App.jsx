@@ -206,7 +206,7 @@ export default function App() {
           Hệ thống tạo mã VietQR chuẩn ngân hàng và chia sẻ liên kết mã hóa ngẫu nhiên an toàn.
         </p>
         <p style={{ marginTop: '6px', fontSize: '0.8rem' }}>
-          Triển khai tại <a href="https://chuyentiennhanh.vercel.app" target="_blank" rel="noopener noreferrer">chuyentiennhanh.vercel.app</a> • Mã nguồn mở trên <a href="https://github.com/tghip26/qrfast" target="_blank" rel="noopener noreferrer">GitHub</a>.
+          Dịch vụ thanh toán chuyển khoản liên ngân hàng 24/7 trực tuyến.
         </p>
       </footer>
 
