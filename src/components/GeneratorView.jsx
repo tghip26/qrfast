@@ -4,8 +4,9 @@ import {
   Building2, ChevronRight, User, DollarSign, FileText, 
   Sparkles, Zap, Trash2, QrCode, Layers, ShieldCheck, 
   CreditCard, Check, ArrowRight, AlertCircle, Info,
-  Loader2, CheckCircle2, RotateCw
+  Loader2, CheckCircle2, RotateCw, Key
 } from 'lucide-react';
+import ApiConfigModal from './ApiConfigModal';
 import { POPULAR_BANK_CODES } from '../data/banks';
 import { buildVietQRUrl, fetchOfficialVietQR, lookupAccountName, formatVND, formatNumberDots, cleanDigits, numberToVietnameseWords } from '../utils/vietqr';
 import { generateVietQREmvco, detectBankFromCardNumber } from '../utils/emvco';
@@ -41,6 +42,13 @@ export default function GeneratorView({
   const [accountNo, setAccountNo] = useState('');
   const [accountName, setAccountName] = useState('');
   const [lookupStatus, setLookupStatus] = useState('idle'); // 'idle' | 'checking' | 'verified'
+  const [isApiModalOpen, setIsApiModalOpen] = useState(false);
+  const [hasApiKey, setHasApiKey] = useState(() => {
+    return !!(
+      (typeof localStorage !== 'undefined' && localStorage.getItem('vietqr_client_id')) || 
+      (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_VIETQR_CLIENT_ID)
+    );
+  });
   const [amount, setAmount] = useState('');
   const [memo, setMemo] = useState('');
   const [qrStyle, setQrStyle] = useState('standard'); // 'standard' (EMVCo pure) or 'styled' (VietQR card)
@@ -535,13 +543,64 @@ export default function GeneratorView({
                       )}
                     </div>
                   )}
+
+                  <div style={{ 
+                    marginTop: '8px', 
+                    paddingTop: '6px', 
+                    borderTop: '1px solid rgba(0, 229, 153, 0.15)', 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'space-between', 
+                    fontSize: '0.74rem' 
+                  }}>
+                    <span style={{ color: hasApiKey ? 'var(--emerald-400)' : 'var(--text-dim)', display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+                      <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', background: hasApiKey ? 'var(--emerald-400)' : 'var(--text-dim)' }}></span>
+                      {hasApiKey ? 'Đã kết nối API VietQR tra cứu tên trực tiếp' : 'Tra cứu qua Napas 24/7 khi quét hoặc kết nối API'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setIsApiModalOpen(true)}
+                      style={{ 
+                        background: 'none', 
+                        border: 'none', 
+                        color: 'var(--emerald-400)', 
+                        cursor: 'pointer', 
+                        padding: '2px 4px', 
+                        fontWeight: 600, 
+                        display: 'inline-flex', 
+                        alignItems: 'center', 
+                        gap: '4px'
+                      }}
+                    >
+                      <Key size={12} /> Cài đặt API
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
           ) : (
-            <div className="reconcile-waiting-box">
-              <ShieldCheck size={15} color="var(--emerald-400)" />
-              <span>Sau khi gõ xong số tài khoản, ô tên chủ tài khoản sẽ hiển thị ngay tại đây và tự động đối soát Napas 24/7</span>
+            <div className="reconcile-waiting-box" style={{ justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <ShieldCheck size={15} color="var(--emerald-400)" />
+                <span>Sau khi gõ xong số tài khoản, ô tên chủ tài khoản sẽ hiển thị ngay tại đây và tự động đối soát</span>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsApiModalOpen(true)}
+                style={{ 
+                  background: 'none', 
+                  border: 'none', 
+                  color: 'var(--text-dim)', 
+                  cursor: 'pointer', 
+                  padding: 0, 
+                  fontSize: '0.74rem',
+                  display: 'inline-flex', 
+                  alignItems: 'center', 
+                  gap: '4px' 
+                }}
+              >
+                <Key size={12} /> API Key
+              </button>
             </div>
           )}
 
@@ -823,6 +882,19 @@ export default function GeneratorView({
           </p>
         </div>
       </div>
+
+      {/* Modal Cài đặt API Tra cứu VietQR */}
+      <ApiConfigModal 
+        isOpen={isApiModalOpen}
+        onClose={() => setIsApiModalOpen(false)}
+        selectedBank={selectedBank}
+        accountNo={accountNo}
+        onSaved={() => {
+          setHasApiKey(!!(localStorage.getItem('vietqr_client_id') || (import.meta.env && import.meta.env.VITE_VIETQR_CLIENT_ID)));
+          handleRecheckName();
+        }}
+        onShowToast={onShowToast}
+      />
     </div>
   );
 }

@@ -54,26 +54,30 @@ export async function fetchOfficialVietQR({ bankBin, accountNo, template = 'comp
 
 /**
  * Lookup bank account holder name via VietQR / Napas API
- * Supports API keys if configured, and handles interbank queries
+ * Supports API keys from localStorage or Vite environment variables
  */
 export async function lookupAccountName({ bankBin, accountNo }) {
   if (!bankBin || !accountNo) return null;
   const cleanAccount = String(accountNo).replace(/\s+/g, '');
   if (cleanAccount.length < 5) return null;
 
-  const clientId = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_VIETQR_CLIENT_ID) || '';
-  const apiKey = (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_VIETQR_API_KEY) || '';
+  const clientId = (typeof localStorage !== 'undefined' && localStorage.getItem('vietqr_client_id')) ||
+                   (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_VIETQR_CLIENT_ID) || '';
+  const apiKey = (typeof localStorage !== 'undefined' && localStorage.getItem('vietqr_api_key')) ||
+                 (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_VIETQR_API_KEY) || '';
+
+  if (!clientId || !apiKey) {
+    return null;
+  }
 
   try {
-    const headers = { 'Content-Type': 'application/json' };
-    if (clientId && apiKey) {
-      headers['x-client-id'] = clientId;
-      headers['x-api-key'] = apiKey;
-    }
-
     const res = await fetch('https://api.vietqr.io/v2/lookup', {
       method: 'POST',
-      headers,
+      headers: {
+        'Content-Type': 'application/json',
+        'x-client-id': clientId,
+        'x-api-key': apiKey
+      },
       body: JSON.stringify({
         bin: String(bankBin),
         accountNumber: cleanAccount
@@ -84,7 +88,7 @@ export async function lookupAccountName({ bankBin, accountNo }) {
       return data.data.accountName;
     }
   } catch (err) {
-    // Interbank gateway query or offline handling
+    console.warn('VietQR lookup error:', err);
   }
   return null;
 }
