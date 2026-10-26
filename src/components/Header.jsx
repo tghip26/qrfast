@@ -14,7 +14,7 @@ export default function Header({
       <div className="header-inner">
         <a href="#/" onClick={(e) => { e.preventDefault(); onGoHome(); }} className="brand-logo" title="Chuyển Tiền Nhanh 24/7">
           <div className="brand-vector-container">
-            <img src="./logo.svg?v=20261026c" alt="Logo Chuyển Tiền Nhanh" className="brand-vector-img" />
+            <img src="./logo.svg?v=20261026d" alt="Logo Chuyển Tiền Nhanh" className="brand-vector-img" />
             <div className="brand-vector-glow"></div>
           </div>
           <div className="brand-text-group">

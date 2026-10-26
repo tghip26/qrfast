@@ -7,12 +7,6 @@
       <stop offset="100%" stop-color="#00A3FF" />
     </linearGradient>
 
-    <!-- Subtle Golden Sparkle Gradient -->
-    <linearGradient id="ctn-gold" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFF275" />
-      <stop offset="100%" stop-color="#FFB300" />
-    </linearGradient>
-
     <!-- Inner Soft Radial Light -->
     <radialGradient id="ctn-radial-light" cx="35%" cy="30%" r="70%">
       <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.32" />
@@ -48,8 +42,4 @@
           stroke-linecap="round" 
           stroke-linejoin="round" />
   </g>
-
-  <!-- Dynamic Speed Transfer Sparkle in Top-Right -->
-  <path d="M 390 76 Q 390 108 418 112 Q 390 116 390 148 Q 390 116 362 112 Q 390 108 390 76 Z" 
-        fill="url(#ctn-gold)" />
 </svg>
